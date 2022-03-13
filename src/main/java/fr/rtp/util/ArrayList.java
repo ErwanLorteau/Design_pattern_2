@@ -7,20 +7,22 @@ public class ArrayList {
 
     public void add(Object child) {
         // <1>
-        if (!readOnly) {
-            int newSize = size + 1;
-        // <2>
-            if (newSize > elements.length) {
-                Object[] newElements = new Object[elements.length + 10];
-                for (int i = 0; i < size; i++) {
-                    newElements[i] = elements[i];
-                }
-                elements = newElements;
-            }
-        // <3>
-            elements[size] = child;
-            size++;
+        if (readOnly) {
+            return ;
         }
+
+        int newSize = size + 1;
+        // <2>
+        if (newSize > elements.length) {
+            Object[] newElements = new Object[elements.length + 10];
+            for (int i = 0; i < size; i++) {
+                newElements[i] = elements[i];
+            }
+            elements = newElements;
+        }
+        // <3>
+        elements[size] = child;
+        size++;
     }
 
     public void setReadOnly(boolean readOnly) {
