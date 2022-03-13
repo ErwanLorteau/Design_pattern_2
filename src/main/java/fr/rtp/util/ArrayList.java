@@ -7,16 +7,12 @@ public class ArrayList {
     private int size = 0;
 
     public void add(Object child) {
-        // <1>
         if (readOnly) {
             return ;
         }
-
-        // <2>
         if (atCapatity()) {
             grow();
         }
-        // <3>
         addElement(child);
     }
 
