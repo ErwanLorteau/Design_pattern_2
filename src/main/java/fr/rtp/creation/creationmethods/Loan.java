@@ -9,6 +9,7 @@ public class Loan {
     int riskRating;
     Date maturity;
     Date expiry;
+    //Already done?
     CapitalStrategy capitalStrategy;
 
     public Loan(double commitment, int riskRating, Date maturity) {
