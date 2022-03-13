@@ -12,9 +12,8 @@ public class ArrayList {
             return ;
         }
 
-        int newSize = size + 1;
         // <2>
-        if (newSize > elements.length) {
+        if (atCapatity()) {
             Object[] newElements = new Object[elements.length + GROWTH_INCREMENT];
             for (int i = 0; i < size; i++) {
                 newElements[i] = elements[i];
@@ -23,6 +22,10 @@ public class ArrayList {
         }
         // <3>
         addElement(child);
+    }
+
+    private boolean atCapatity() {
+        return size + 1 > elements.length;
     }
 
     private void addElement(Object child) {
