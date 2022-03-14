@@ -42,11 +42,7 @@ public class Loan {
     }
 
     public double duration() {
-        if (getExpiry() == null && getMaturity() != null) // Term Loan
-            return weightedAverageDuration();
-        else if (getExpiry() != null && getMaturity() == null) // Revolver or Advised Line
-            return yearsTo(getExpiry());
-        return 0.0;
+        return strategy.duration(this);
     }
 
     private double outstandingRiskAmount() {
@@ -59,7 +55,7 @@ public class Loan {
 
 
 
-    private double weightedAverageDuration() {
+    protected double weightedAverageDuration() {
         double duration = 0.0;
         double weightedAverage = 0.0;
         double sumOfPayments = 0.0;
