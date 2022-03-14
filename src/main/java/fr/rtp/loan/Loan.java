@@ -11,47 +11,28 @@ public class Loan {
     private static final int DAYS_PER_YEAR = 365;
 
     private CapitalStrategy strategy ;
-    private int riskRating;
-    private double outstanding;
-    private Date maturity;
-    private Date expiry;
     private Date today;
-    private Date start;
     private Set<Payment> payments;
     private double unusedPercentage;
 
     public Loan(double commitment, int riskRating, Date maturity) {
-
-        this.outstanding = 0.00;
-        this.riskRating = riskRating;
-        this.maturity = maturity;
-        this.expiry = null;
+       strategy = new CapitalStrategy(commitment, 0.00, maturity, null, null, riskRating) ;
     }
 
     public Loan(double commitment, double outstanding, Date start, Date expiry, Date maturity, int riskRating) {
-        strategy = new CapitalStrategy(commitment) ;
-        this.outstanding = outstanding;
-        this.start = start;
-        this.riskRating = riskRating;
-        this.maturity = maturity;
-        this.expiry = expiry;
+        strategy = new CapitalStrategy(commitment, outstanding, maturity, expiry, start, riskRating) ;
         payments = new HashSet<Payment>();
     }
 
     public Loan(double commitment, Date start, Date maturity, int riskRating) {
-        strategy = new CapitalStrategy(commitment) ;
-        this.outstanding = commitment;
-        this.start = start;
-        this.riskRating = riskRating;
-        this.maturity = maturity;
-        this.expiry = null;
+        strategy = new CapitalStrategy(commitment, commitment, maturity, null, start, riskRating) ;
         payments = new HashSet<Payment>();
     }
 
     public double capital() {
-        if (expiry == null && maturity != null) // Term Loan
+        if (getExpiry() == null && getMaturity() != null) // Term Loan
             return getCommitment() * duration() * riskFactor();
-        if (expiry != null && maturity == null) {
+        if (getExpiry() != null && getMaturity() == null) {
             if (getUnusedPercentage() != 1.0) // Revolver
                 return getCommitment() * getUnusedPercentage() * duration() * riskFactor();
             else // Advised Line
@@ -62,19 +43,19 @@ public class Loan {
     }
 
     public double duration() {
-        if (expiry == null && maturity != null) // Term Loan
+        if (getExpiry() == null && getMaturity() != null) // Term Loan
             return weightedAverageDuration();
-        else if (expiry != null && maturity == null) // Revolver or Advised Line
-            return yearsTo(expiry);
+        else if (getExpiry() != null && getMaturity() == null) // Revolver or Advised Line
+            return yearsTo(getExpiry());
         return 0.0;
     }
 
     private double outstandingRiskAmount() {
-        return outstanding;
+        return getOutstanding();
     }
 
     private double unusedRiskAmount() {
-        return (getCommitment() - outstanding);
+        return (getCommitment() - getOutstanding());
     }
 
 
@@ -95,16 +76,16 @@ public class Loan {
     }
 
     private double yearsTo(Date endDate) {
-        Date beginDate = (today == null ? start : today);
+        Date beginDate = (today == null ? getStart() : today);
         return ((double) (endDate.getTime() - beginDate.getTime()) / MILLIS_PER_DAY) / DAYS_PER_YEAR;
     }
 
     private double riskFactor() {
-        return RiskFactor.getFactors().forRating(riskRating);
+        return RiskFactor.getFactors().forRating(getRiskRating());
     }
 
     private double unusedRiskFactor() {
-        return UnusedRiskFactors.getFactors().forRating(riskRating);
+        return UnusedRiskFactors.getFactors().forRating(getRiskRating());
     }
 
     private double getUnusedPercentage() {
@@ -120,5 +101,25 @@ public class Loan {
 
     private double getCommitment() {
         return strategy.getCommitment();
+    }
+
+    private int getRiskRating() {
+        return strategy.getRiskRating();
+    }
+
+    private double getOutstanding() {
+        return strategy.getOutstanding();
+    }
+
+    private Date getMaturity() {
+        return strategy.getMaturity();
+    }
+
+    private Date getExpiry() {
+        return strategy.getExpiry() ;
+    }
+
+    private Date getStart() {
+        return strategy.getStart() ;
     }
 }
