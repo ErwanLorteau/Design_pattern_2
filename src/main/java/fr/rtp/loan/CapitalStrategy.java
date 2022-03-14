@@ -22,6 +22,7 @@ public class CapitalStrategy {
         this.start = start;
     }
      protected double yearsTo(Date endDate) {
+        //*
         Date beginDate = (today == null ? getStart() : today);
         return ((double) (endDate.getTime() - beginDate.getTime()) / MILLIS_PER_DAY) / DAYS_PER_YEAR;
     }
