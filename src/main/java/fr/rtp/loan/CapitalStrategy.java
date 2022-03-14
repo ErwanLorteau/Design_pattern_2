@@ -9,6 +9,9 @@ public class CapitalStrategy {
     private final Date maturity;
     private final Date expiry;
     private final Date start;
+    private static final int MILLIS_PER_DAY = 86400000;
+    private static final int DAYS_PER_YEAR = 365;
+    private Date today;
 
     public CapitalStrategy(double commitment, double outstanding, Date maturity, Date expiry, Date start, int riskRating) {
         this.commitment = commitment;
@@ -17,6 +20,10 @@ public class CapitalStrategy {
         this.maturity = maturity;
         this.expiry = expiry;
         this.start = start;
+    }
+     protected double yearsTo(Date endDate) {
+        Date beginDate = (today == null ? getStart() : today);
+        return ((double) (endDate.getTime() - beginDate.getTime()) / MILLIS_PER_DAY) / DAYS_PER_YEAR;
     }
 
     protected double getCommitment() {
