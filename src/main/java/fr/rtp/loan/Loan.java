@@ -10,6 +10,7 @@ public class Loan {
     private static final int MILLIS_PER_DAY = 86400000;
     private static final int DAYS_PER_YEAR = 365;
 
+    private CapitalStrategy strategy = new CapitalStrategy() ;
     private int riskRating;
     private double commitment;
     private double outstanding;
