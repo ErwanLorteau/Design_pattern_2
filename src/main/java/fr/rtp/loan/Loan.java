@@ -10,9 +10,8 @@ public class Loan {
     private static final int MILLIS_PER_DAY = 86400000;
     private static final int DAYS_PER_YEAR = 365;
 
-    private CapitalStrategy strategy = new CapitalStrategy() ;
+    private CapitalStrategy strategy ;
     private int riskRating;
-    private double commitment;
     private double outstanding;
     private Date maturity;
     private Date expiry;
@@ -22,7 +21,7 @@ public class Loan {
     private double unusedPercentage;
 
     public Loan(double commitment, int riskRating, Date maturity) {
-        this.commitment = commitment;
+
         this.outstanding = 0.00;
         this.riskRating = riskRating;
         this.maturity = maturity;
@@ -30,7 +29,7 @@ public class Loan {
     }
 
     public Loan(double commitment, double outstanding, Date start, Date expiry, Date maturity, int riskRating) {
-        this.commitment = commitment;
+        strategy = new CapitalStrategy(commitment) ;
         this.outstanding = outstanding;
         this.start = start;
         this.riskRating = riskRating;
@@ -40,7 +39,7 @@ public class Loan {
     }
 
     public Loan(double commitment, Date start, Date maturity, int riskRating) {
-        this.commitment = commitment;
+        strategy = new CapitalStrategy(commitment) ;
         this.outstanding = commitment;
         this.start = start;
         this.riskRating = riskRating;
@@ -51,10 +50,10 @@ public class Loan {
 
     public double capital() {
         if (expiry == null && maturity != null) // Term Loan
-            return commitment * duration() * riskFactor();
+            return getCommitment() * duration() * riskFactor();
         if (expiry != null && maturity == null) {
             if (getUnusedPercentage() != 1.0) // Revolver
-                return commitment * getUnusedPercentage() * duration() * riskFactor();
+                return getCommitment() * getUnusedPercentage() * duration() * riskFactor();
             else // Advised Line
                 return (outstandingRiskAmount() * duration() * riskFactor())
                         + (unusedRiskAmount() * duration() * unusedRiskFactor());
@@ -75,7 +74,7 @@ public class Loan {
     }
 
     private double unusedRiskAmount() {
-        return (commitment - outstanding);
+        return (getCommitment() - outstanding);
     }
 
 
@@ -90,7 +89,7 @@ public class Loan {
             sumOfPayments += payment.amount();
             weightedAverage += yearsTo(payment.date()) * payment.amount();
         }
-        if (commitment != 0.0)
+        if (getCommitment() != 0.0)
             duration = weightedAverage / sumOfPayments;
         return duration;
     }
@@ -117,5 +116,9 @@ public class Loan {
         payment.setAmount(amount);
         payment.setDate(date);
         payments.add(payment);
+    }
+
+    private double getCommitment() {
+        return strategy.getCommitment();
     }
 }
