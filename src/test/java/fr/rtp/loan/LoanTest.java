@@ -14,6 +14,7 @@ class LoanTest {
         Date maturity = new Date(2022, 12,31);
 
         Loan loan = new Loan(1000, start, maturity,5);
+
         loan.payment(100, new Date(2020,2,1));
         loan.payment(100, new Date(2020,3,1));
         loan.payment(100, new Date(2020,4,1));
@@ -27,7 +28,7 @@ class LoanTest {
         Date maturity = null;
         Date expiry = new Date(2022, 12,31);
 
-        Loan loan = new Loan(1000, 0.5, start, expiry, maturity, 5);
+        Loan loan = new Loan(1000, 0.5, start, expiry, 5);
 
         loan.payment(100, new Date(2020,2,1));
         loan.payment(100, new Date(2020,3,1));

@@ -14,19 +14,32 @@ public class Loan {
     private Set<Payment> payments;
     private double unusedPercentage;
 
-    public Loan(double commitment, int riskRating, Date maturity) {
-       strategy = new CapitalStrategy(commitment, 0.00, maturity, null, null, riskRating) ;
+    //Null expiry
+    public Loan(double commitment, double outstanding, Date start, int riskRating, Date maturity) {
+        this.strategy = new TermLoanStrategy( commitment,  outstanding,  maturity ,  start,  riskRating) ;
+        this.payments = new HashSet<Payment>() ;
     }
 
-    public Loan(double commitment, double outstanding, Date start, Date expiry, Date maturity, int riskRating) {
-        strategy = new CapitalStrategy(commitment, outstanding, maturity, expiry, start, riskRating) ;
-        payments = new HashSet<Payment>();
+    public Loan(double commitment, double outstanding, Date start, Date expiry, int riskRating) {
+        this.strategy = new RevolverStrategy( commitment,  outstanding,  null,  expiry,  start,  riskRating) ;
+        this.payments = new HashSet<Payment>() ;
+
+    }
+
+    public Loan(double commitment, double outstanding, Date maturity, Date expiry, Date start, int riskRating) {
+        this.strategy = new AdvisedLineStrategy( commitment,  outstanding,  maturity,  expiry,  start,  riskRating) ;
+        this.payments = new HashSet<Payment>() ;
+
     }
 
     public Loan(double commitment, Date start, Date maturity, int riskRating) {
-        strategy = new CapitalStrategy(commitment, commitment, maturity, null, start, riskRating) ;
-        payments = new HashSet<Payment>();
+        this.strategy = new TermLoanStrategy( commitment, 0 ,  maturity ,  start,  riskRating) ;
+        this.payments = new HashSet<Payment>() ;
+
     }
+
+
+
 
     public double capital() {
         return strategy.capital(this);

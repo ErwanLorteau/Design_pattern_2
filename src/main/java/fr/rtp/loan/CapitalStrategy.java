@@ -2,7 +2,7 @@ package fr.rtp.loan;
 
 import java.util.Date;
 
-public class CapitalStrategy {
+public abstract class CapitalStrategy {
     private final double commitment;
     private final int riskRating;
     private final double outstanding;
@@ -51,14 +51,6 @@ public class CapitalStrategy {
         return start;
     }
 
-    double duration(Loan loan) {
-        if (this.getExpiry() == null && this.getMaturity() != null) // Term Loan
-            return loan.weightedAverageDuration();
-        else if (this.getExpiry() != null && this.getMaturity() == null) // Revolver or Advised Line
-            return this.yearsTo(this.getExpiry());
-        return 0.0;
-    }
-
     double unusedRiskAmount() {
         return (getCommitment() - getOutstanding());
     }
@@ -79,18 +71,10 @@ public class CapitalStrategy {
         return 0.05;
     }
 
-    double capital(Loan loan) {
-        if (getExpiry() == null && getMaturity() != null) // Term Loan
-            return getCommitment() * duration(loan) * riskFactor();
-        if (getExpiry() != null && getMaturity() == null) {
-            if (getUnusedPercentage() != 1.0) // Revolver
-                return getCommitment() * getUnusedPercentage() * duration(loan) * riskFactor();
-            else // Advised Line
-                return (outstandingRiskAmount() * duration(loan) * riskFactor())
-                        + (unusedRiskAmount() * duration(loan) * unusedRiskFactor());
-        }
-        return 0.0;
-    }
+   abstract double capital(Loan loan) ;
+
+    abstract double duration(Loan loan) ;
+
 }
 
 
