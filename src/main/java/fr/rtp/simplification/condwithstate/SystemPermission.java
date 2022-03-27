@@ -1,54 +1,51 @@
 package fr.rtp.simplification.condwithstate;
 
+import fr.unantes.sce.temp.PermissionState;
+
 public class SystemPermission {
 
   private SystemProfile profile;
   private SystemUser requestor;
   private SystemAdmin admin;
   private boolean isGranted;
-  private String state;
-
-  public final static String REQUESTED = "REQUESTED";
-  public final static String CLAIMED = "CLAIMED";
-  public final static String GRANTED = "GRANTED";
-  public final static String DENIED = "DENIED";
+  private PermissionState state;
 
   public SystemPermission(SystemUser requestor, SystemProfile profile) {
     this.requestor = requestor;
     this.profile = profile;
-    state = REQUESTED;
+    state = PermissionState.REQUESTED;
     isGranted = false;
     notifyAdminOfPermissionRequest();
   }
 
   public void claimedBy(SystemAdmin admin) {
-    if (!state.equals(REQUESTED)) {
+    if (!state.equals(PermissionState.REQUESTED)) {
       return;
     }
     willBeHandledBy(admin);
-    state = CLAIMED;
+    state = PermissionState.CLAIMED;
   }
 
   public void deniedBy(SystemAdmin admin) {
-    if (!state.equals(CLAIMED)) {
+    if (!state.equals(PermissionState.CLAIMED)) {
       return;
     }
     if (!admin.equals(this.admin)) {
       return;
     }
     isGranted = false;
-    state = DENIED;
+    state = PermissionState.DENIED;
     notifyUserOfPermissionRequestResult();
   }
 
   public void grantedBy(SystemAdmin admin) {
-    if (!state.equals(CLAIMED)) {
+    if (!state.equals(PermissionState.CLAIMED)) {
       return;
     }
     if (!admin.equals(this.admin)) {
       return;
     }
-    state = GRANTED;
+    state = PermissionState.GRANTED;
     isGranted = true;
     notifyUserOfPermissionRequestResult();
   }
@@ -63,8 +60,8 @@ public class SystemPermission {
   private void notifyAdminOfPermissionRequest() {
   }
 
-  public String state() {
-    return state;
+  public PermissionState state() {
+    return state.getState();
   }
 
   public boolean isGranted() {
