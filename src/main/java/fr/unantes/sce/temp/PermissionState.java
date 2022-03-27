@@ -1,5 +1,10 @@
 package fr.unantes.sce.temp;
 
+
+
+import fr.rtp.simplification.condwithstate.SystemAdmin;
+import fr.rtp.simplification.condwithstate.SystemPermission;
+
 import java.util.Objects;
 
 public abstract class PermissionState {
@@ -31,5 +36,37 @@ public abstract class PermissionState {
     @Override
     public int hashCode() {
         return Objects.hash(state);
+    }
+
+    public void claimedBy(SystemAdmin admin, SystemPermission systemPermission) {
+      if (!systemPermission.getState().equals(REQUESTED)) {
+        return;
+      }
+      systemPermission.willBeHandledBy(admin);
+      systemPermission.setState(CLAIMED);
+    }
+
+    public void deniedBy(SystemAdmin admin, SystemPermission systemPermission) {
+      if (!systemPermission.getState().equals(CLAIMED)) {
+        return;
+      }
+      if (!admin.equals(systemPermission.getAdmin())) {
+        return;
+      }
+      systemPermission.setGranted(false);
+      systemPermission.setState(DENIED);
+      systemPermission.notifyUserOfPermissionRequestResult();
+    }
+
+    public void grantedBy(SystemAdmin admin, SystemPermission systemPermission) {
+      if (!systemPermission.getState().equals(CLAIMED)) {
+        return;
+      }
+      if (!admin.equals(systemPermission.getAdmin())) {
+        return;
+      }
+      systemPermission.setState(GRANTED);
+      systemPermission.setGranted(true);
+      systemPermission.notifyUserOfPermissionRequestResult();
     }
 }

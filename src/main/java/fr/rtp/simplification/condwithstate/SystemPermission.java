@@ -13,59 +13,66 @@ public class SystemPermission {
   public SystemPermission(SystemUser requestor, SystemProfile profile) {
     this.requestor = requestor;
     this.profile = profile;
-    state = PermissionState.REQUESTED;
-    isGranted = false;
+    setState(PermissionState.REQUESTED);
+    setGranted(false);
     notifyAdminOfPermissionRequest();
   }
 
   public void claimedBy(SystemAdmin admin) {
-    if (!state.equals(PermissionState.REQUESTED)) {
-      return;
-    }
-    willBeHandledBy(admin);
-    state = PermissionState.CLAIMED;
+    getState().claimedBy(admin, this);
   }
 
   public void deniedBy(SystemAdmin admin) {
-    if (!state.equals(PermissionState.CLAIMED)) {
-      return;
-    }
-    if (!admin.equals(this.admin)) {
-      return;
-    }
-    isGranted = false;
-    state = PermissionState.DENIED;
-    notifyUserOfPermissionRequestResult();
+    getState().deniedBy(admin, this);
   }
 
   public void grantedBy(SystemAdmin admin) {
-    if (!state.equals(PermissionState.CLAIMED)) {
-      return;
-    }
-    if (!admin.equals(this.admin)) {
-      return;
-    }
-    state = PermissionState.GRANTED;
-    isGranted = true;
-    notifyUserOfPermissionRequestResult();
+    getState().grantedBy(admin, this);
   }
 
-  private void willBeHandledBy(SystemAdmin admin) {
-    this.admin = admin;
+
+  /**Following methods have been put in public beaucause in 6.1, path of extracting methods indicate to put the permission state méthod into unantes.sce.temp (error?)
+   * But then, following methods are not accessible from sce.temp in protected visibility. I decided to put it in public to avoid undo the commit, but it should be protected and in the same package.
+
+   * @param admin
+   */
+  public void willBeHandledBy(SystemAdmin admin) {
+    this.setAdmin(admin);
   }
 
-  private void notifyUserOfPermissionRequestResult() {
+  public void notifyUserOfPermissionRequestResult() {
   }
 
-  private void notifyAdminOfPermissionRequest() {
+  public void notifyAdminOfPermissionRequest() {
   }
 
   public PermissionState state() {
-    return state.getState();
+    return getState().getState();
+  }
+
+  public PermissionState getState() {
+    return state;
+  }
+
+  public void setState(PermissionState state) {
+    this.state = state;
   }
 
   public boolean isGranted() {
     return isGranted;
   }
 
+  public void setGranted(boolean granted) {
+    isGranted = granted;
+  }
+
+  public SystemAdmin getAdmin() {
+    return admin;
+  }
+
+  public void setAdmin(SystemAdmin admin) {
+    this.admin = admin;
+  }
 }
+
+
