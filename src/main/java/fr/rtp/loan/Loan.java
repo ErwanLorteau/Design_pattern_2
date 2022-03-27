@@ -38,9 +38,6 @@ public class Loan {
 
     }
 
-
-
-
     public double capital() {
         return strategy.capital(this);
     }
