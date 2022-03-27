@@ -6,9 +6,9 @@ public abstract class PermissionState {
 
     private final String state;
     public final static PermissionState REQUESTED = new Requested("REQUESTED");
-    public final static PermissionState CLAIMED = new Claimed("REQUESTED");
-    public final static PermissionState DENIED = new Denied("REQUESTED");
-    public final static PermissionState GRANTED = new Granted("REQUESTED");
+    public final static PermissionState CLAIMED = new Claimed("CLAIMED");
+    public final static PermissionState DENIED = new Denied("DENIED");
+    public final static PermissionState GRANTED = new Granted("GRANTED");
 
 
 
