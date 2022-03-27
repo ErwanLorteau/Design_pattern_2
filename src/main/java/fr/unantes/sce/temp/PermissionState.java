@@ -2,14 +2,15 @@ package fr.unantes.sce.temp;
 
 import java.util.Objects;
 
-public class PermissionState {
+public abstract class PermissionState {
 
     private final String state;
+    public final static PermissionState REQUESTED = new Requested("REQUESTED");
+    public final static PermissionState CLAIMED = new Claimed("REQUESTED");
+    public final static PermissionState DENIED = new Denied("REQUESTED");
+    public final static PermissionState GRANTED = new Granted("REQUESTED");
 
-    public final static PermissionState REQUESTED = new PermissionState("REQUESTED");
-    public final static PermissionState CLAIMED = new PermissionState("CLAIMED");
-    public final static PermissionState DENIED = new PermissionState("DENIED");
-    public final static PermissionState GRANTED = new PermissionState("GRANTED");
+
 
     public PermissionState(String state) {
         this.state = state;
